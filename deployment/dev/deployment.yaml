@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: parse-csv-deployment
+spec:
+  selector:
+    matchLabels:
+      app: parse-csv
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: parse-csv
+    spec:
+      containers:
+      - image: example.com/parse-csv:latest-dev
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "80Mi"
+            cpu: "100m"
+          limits:
+            memory: "124Mi"
+            cpu: "200m"
+        name: parse-csv
+        ports:
+        - containerPort: 8000
+        envFrom:
+          - secretRef:
+              name: parse-csv-secret
+          - configMapRef:
+              name: parse-csv-config

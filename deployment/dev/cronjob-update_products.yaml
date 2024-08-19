@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: update-products
+spec:
+  schedule: "0 10 * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: update-products
+            image: example.com/parse-cvs:latest-dev
+            imagePullPolicy: Always
+            envFrom:
+              - secretRef:
+                  name: parse-cvs-secret
+              - configMapRef:
+                  name: parse-cvs-config
+            command:
+            - sh
+            - -c
+            - "python app/scripts/update_products.py"
+          restartPolicy: Never
